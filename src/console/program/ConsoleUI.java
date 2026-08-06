@@ -2,21 +2,19 @@ package console.program;
 
 import java.util.Scanner;
 
-/**
- * The Restaurant class provides the functionality needed to manage orders and checkout.
- */
-public class Restaurant {
+// Provides the console interface for the MyTimetable application
+public class ConsoleUI {
+    private final Scanner scanner = new Scanner(System.in);
 
     private String name;
-    
-    public Restaurant(String name) {
-    	this.name = name;
+
+    public ConsoleUI(CourseCatalog catalog, Timetable timetable) {
     }
-    
+
     public String getName() {
     	return this.name;
     }
-    
+
 	/**
      * The method to operate the restaurant.
      */
@@ -24,9 +22,9 @@ public class Restaurant {
     	boolean exit = false;
     	do {
 			printMenu(this.getName());
-			
+
 			String stringInput = readUserInput();
-			
+
 			// Check the user input and continue with the next iteration
 			// if no input is provided
 			if (stringInput.isEmpty()) {
@@ -35,7 +33,7 @@ public class Restaurant {
 			}
 
 			char input = stringInput.charAt(0);
-			
+
 			switch (input) {
 				case 'a':
 					this.order();
@@ -52,7 +50,7 @@ public class Restaurant {
 			}
 		} while (!exit);
     }
-    
+
 	/**
      * The utility method to print menu options.
      */
@@ -64,22 +62,21 @@ public class Restaurant {
 		System.out.printf("   %s%n", "c) Exit");
 		System.out.print("Please select: ");
 	}
-	
+
 	/**
      * The utility method to read user input.
      */
-    public static String readUserInput() {
-	    Scanner sc = new Scanner(System.in);
-	    return sc.nextLine();
+    public String readUserInput() {
+	    return scanner.nextLine();
 	}
-    
+
     /**
      * The method to place orders.
      */
     public void order() {
     	System.out.println("Order food.");
     }
-    
+
     /**
      * The method to manage checkout.
      */
