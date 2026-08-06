@@ -1,0 +1,11 @@
+.DS_Store
+*.class
+
+# Java build output
+out/
+target/
+
+# IDE metadata
+.idea/
+*.iml
+.vscode/
