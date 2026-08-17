@@ -1,21 +1,19 @@
 package console.program;
 
 import java.util.List;
+import java.util.Scanner;
 
-/**
- * The Main class is the entry point of the sample console program.
- */
+// Starts the MyTimetable application
 public class Main {
 
-	public static void main(String args[]){
-	    CourseLoader loader = new CourseLoader();
-		List<Course> courses = loader.load("courses.csv");
+    public static void main(String[] args) {
+        List<Course> courses = new CourseLoader().load("courses.csv");
 
-		CourseCatalog catalog = new CourseCatalog(courses);
-		Timetable timetable = new Timetable();
+        CourseCatalog catalog = new CourseCatalog(courses);
+        Timetable timetable = new Timetable();
 
-		ConsoleUI ui = new ConsoleUI(catalog, timetable);
-		ui.run();
-	}
+        ConsoleUI ui = new ConsoleUI(catalog, timetable, new Scanner(System.in));
+        ui.run();
+    }
 
 }
