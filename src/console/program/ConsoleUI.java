@@ -3,6 +3,8 @@ package console.program;
 import java.util.List;
 import java.util.Scanner;
 
+import console.program.Timetable.EnrolmentResult;
+
 // Provides the console interface for the MyTimetable application
 public class ConsoleUI {
 
@@ -32,7 +34,7 @@ public class ConsoleUI {
                     showEnrolledCourses();
                     break;
                 case 3:
-                    System.out.println("Withdrawal is not available yet.");
+                    withdrawFromCourse();
                     break;
                 case 4:
                     exit = true;
@@ -45,6 +47,7 @@ public class ConsoleUI {
     }
 
     private void printMenu() {
+        System.out.println();
         System.out.println("----------------------------------------");
         System.out.println("> Select from main menu");
         System.out.println("----------------------------------------");
@@ -69,18 +72,61 @@ public class ConsoleUI {
             return;
         }
 
+        System.out.println();
         System.out.println("> Select from matching list");
-        for (int index = 0; index < matches.size(); index++) {
-            System.out.println((index + 1) + ") " + matches.get(index).getDisplayDetails());
-        }
+        printCourseList(matches);
         System.out.println((matches.size() + 1) + ") Go to main menu");
         System.out.print("Please select: ");
 
         int selection = readNumber();
         if (selection >= 1 && selection <= matches.size()) {
             Course selectedCourse = matches.get(selection - 1);
-            timetable.enrol(selectedCourse);
-            System.out.println("You have enrolled in the course " + selectedCourse.getName() + "!");
+            EnrolmentResult result = timetable.enrol(selectedCourse);
+
+            switch (result) {
+                case ENROLLED:
+                    System.out.println("You have enrolled in the course " + selectedCourse.getName() + "!");
+                    break;
+                case DUPLICATE:
+                    System.out.println("You are already enrolled in this course.");
+                    break;
+                case FULL:
+                    System.out.println("Sorry. This course has reached its maximum capacity.");
+                    break;
+                case CONFLICT:
+                    Course conflictingCourse = timetable.findLectureConflict(selectedCourse);
+                    System.out.println("You cannot enrol in " + selectedCourse.getName()
+                            + " because it conflicts with " + conflictingCourse.getName() + ".");
+                    break;
+            }
+        }
+    }
+
+    private void withdrawFromCourse() {
+        List<Course> enrolledCourses = timetable.getEnrolledCourses();
+
+        if (enrolledCourses.isEmpty()) {
+            System.out.println("You don't have any courses enrolled.");
+            return;
+        }
+
+        System.out.println();
+        System.out.println("Please choose a course to withdraw from:");
+        printCourseList(enrolledCourses);
+        System.out.println((enrolledCourses.size() + 1) + ") Go to main menu");
+        System.out.print("Please select: ");
+
+        int selection = readNumber();
+        if (selection == enrolledCourses.size() + 1) {
+            return;
+        }
+
+        Course selectedCourse = enrolledCourses.get(selection - 1);
+
+        if (timetable.withdraw(selectedCourse)) {
+            System.out.println("You have withdrawn from " + selectedCourse.getName() + "!");
+        } else {
+            System.out.println("You are not enrolled in this course.");
         }
     }
 
@@ -92,9 +138,14 @@ public class ConsoleUI {
             return;
         }
 
+        System.out.println();
         System.out.println("You have enrolled into the following course(s):");
-        for (int index = 0; index < enrolledCourses.size(); index++) {
-            System.out.println((index + 1) + ") " + enrolledCourses.get(index).getDisplayDetails());
+        printCourseList(enrolledCourses);
+    }
+
+    private void printCourseList(List<Course> courses) {
+        for (int index = 0; index < courses.size(); index++) {
+            System.out.println((index + 1) + ") " + courses.get(index).getDisplayDetails());
         }
     }
 }

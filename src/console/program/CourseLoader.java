@@ -11,10 +11,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 // Loads courses from the CSV data source
-public class CourseLoader {
+public class CourseLoader implements CourseSource {
 
     private static final DateTimeFormatter INPUT_TIME_FORMAT = DateTimeFormatter.ofPattern("H:mm");
 
+    @Override
     public List<Course> load(String fileName) {
         List<Course> courses = new ArrayList<>();
         Path path = Paths.get(fileName);

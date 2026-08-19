@@ -7,7 +7,8 @@ import java.util.Scanner;
 public class Main {
 
     public static void main(String[] args) {
-        List<Course> courses = new CourseLoader().load("courses.csv");
+        CourseSource loader = new CourseLoader();
+        List<Course> courses = loader.load("courses.csv");
 
         CourseCatalog catalog = new CourseCatalog(courses);
         Timetable timetable = new Timetable();

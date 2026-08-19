@@ -10,7 +10,7 @@ public class Course {
 
     private final String name;
     private final Integer capacity;
-    private final String year;
+    private final String year; // year is never used by any assignment feature, but is kept to fully represent course data
     private final String deliveryMode;
     private final String lectureDay;
     private final LocalTime lectureTime;
@@ -34,40 +34,29 @@ public class Course {
         return name;
     }
 
-    public Integer getCapacity() {
-        return capacity;
-    }
-
-    public String getYear() {
-        return year;
-    }
-
-    public String getDeliveryMode() {
-        return deliveryMode;
-    }
-
-    public String getLectureDay() {
-        return lectureDay;
-    }
-
-    public LocalTime getLectureTime() {
-        return lectureTime;
-    }
-
-    public double getLectureDuration() {
-        return lectureDuration;
-    }
-
-    public int getCurrentEnrolments() {
-        return currentEnrolments;
-    }
-
     // Formats the course details for display in the console menus
     public String getDisplayDetails() {
         String shortDay = lectureDay.substring(0, Math.min(3, lectureDay.length()));
         String start = lectureTime.format(DISPLAY_TIME_FORMAT);
         String end = getEndTime().format(DISPLAY_TIME_FORMAT);
         return name + " " + deliveryMode + " " + shortDay + " " + start + "-" + end;
+    }
+
+    public boolean isFull() {
+        // Online classes do not have a max capacity, this is represented by a null value
+        return capacity != null && currentEnrolments >= capacity;
+    }
+
+    public boolean overlapsWith(Course other) {
+        if (!lectureDay.equalsIgnoreCase(other.lectureDay)) {
+            return false;
+        }
+
+        LocalTime thisEndTime = getEndTime();
+        LocalTime otherEndTime = other.getEndTime();
+
+        return lectureTime.isBefore(otherEndTime) && other.lectureTime.isBefore(thisEndTime);
+
     }
 
     private LocalTime getEndTime() {
